@@ -118,10 +118,3 @@ public class Booking {
     }
 }
 
-// Enum for Booking Status
-enum BookingStatus {
-    PENDING,
-    SUCCESSFUL,
-    COMPLETED,
-    CANCELLED
-}

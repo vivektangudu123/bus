@@ -27,7 +27,6 @@ public class AuthenticationController {
         this.jwtUtils = jwtUtils;
     }
 
-
     public String send_otp(String mobile_number,int role) {
             if(userRepository.existsByPhoneNumber(mobile_number))
             {

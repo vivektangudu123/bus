@@ -57,6 +57,7 @@
 package com.example.bus.Booking;
 
 import com.example.bus.Bus.Bus;
+import com.example.bus.Bus.BusRepository;
 import com.example.bus.User.User;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,16 +68,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.bus.Booking.BookingStatus.SUCCESSFUL;
+
 @Service
 public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
-
+    @Autowired
+    private BusRepository busRepository;
     // Add a new booking
-    public Booking addBooking(User user, String seatNumber, Bus bus, LocalDateTime bookingTime, LocalDate travelDate, Pair<Integer, Integer> source, Pair<Integer, Integer> destination) {
-        Booking booking = new Booking(user, seatNumber, bus, bookingTime, travelDate, source, destination);
-        return bookingRepository.save(booking);
+    public boolean addBooking(User user, String seatNumber, Bus bus, LocalDateTime bookingTime, LocalDate travelDate, Pair<Integer, Integer> source, Pair<Integer, Integer> destination) {
+
+        if(bus.bookSeat(seatNumber)){
+            Booking booking = new Booking(user, seatNumber, bus, bookingTime, travelDate, source, destination);
+            booking.setStatus(SUCCESSFUL);
+            bus.bookSeat(seatNumber);
+            busRepository.save(bus);
+            bookingRepository.save(booking);
+            return true;
+        }
+        return false;
+
     }
 
     // Change booking status

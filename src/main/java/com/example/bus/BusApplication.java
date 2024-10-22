@@ -1,9 +1,8 @@
 package com.example.bus;
 
-import com.example.bus.Bus.BusController;
+import com.example.bus.Bus.BusService;
 import com.example.bus.User.AdminController;
-import com.example.bus.User.UserController;
-import com.example.bus.authentication.AuthenticationController;
+import com.example.bus.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,23 +14,11 @@ import java.util.Scanner;
 public class BusApplication implements CommandLineRunner {
 
 	@Autowired
-	private final UserController userController;
-
+	private UserService userService;
 	@Autowired
-	private final AuthenticationController authenticationController;
-
+	private BusService busService;
 	@Autowired
-	private final BusController busController;
-
-	@Autowired
-	private final AdminController adminController;
-
-	public BusApplication(UserController userController, AuthenticationController authenticationController, BusController busController, AdminController adminController) {
-		this.userController = userController;
-		this.authenticationController = authenticationController;
-		this.busController = busController;
-        this.adminController = adminController;
-    }
+	private AdminController adminService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(BusApplication.class, args);
@@ -53,7 +40,6 @@ public class BusApplication implements CommandLineRunner {
 		// Consume newline character left by nextInt()
 		scanner.nextLine();
 
-		// Actions based on role
 		if (role == 1) { // User role
 			int loggedUserId = -1;
 			while (true) {
@@ -63,43 +49,46 @@ public class BusApplication implements CommandLineRunner {
 					System.out.println("2. Login");
 				} else {
 					System.out.println("3. Book a bus seat");
-					System.out.println("4. Cancel a booking");
-					System.out.println("5. Logout");
+					System.out.println("4. View Bus seat plan");
+					System.out.println("5. Cancel a booking");
+					System.out.println("6. Logout");
 				}
-				System.out.println("6. Exit"); // Add exit option
+				System.out.println("7. Exit");
 
 				int choice = scanner.nextInt();
 				scanner.nextLine(); // Consume the newline character
 
 				switch (choice) {
 					case 1:
-						loggedUserId = userController.registerUser();
+						loggedUserId = userService.registerUser();
 						break;
 					case 2:
-						loggedUserId = userController.loginUser();
+						loggedUserId = userService.loginUser();
 						break;
 					case 3:
 						if (loggedUserId != -1) {
-							userController.bookBusSeat();
+							userService.bookBusSeat(userService.findByUserId(loggedUserId));
 						} else {
 							System.out.println("You must log in first.");
 						}
 						break;
 					case 4:
+						userService.viewBuses();
+						break;
+					case 5:
 						if (loggedUserId != -1) {
-							userController.cancelBusSeat();
+							userService.cancelBusSeat(userService.findByUserId(loggedUserId));
 						} else {
 							System.out.println("You must log in first.");
 						}
 						break;
-					case 5:
+					case 6:
 						loggedUserId = -1; // Log out the user
 						System.out.println("You have been logged out.");
 						break;
-					case 6: // Exit option for users
-						System.out.println("Exiting the application. Goodbye!");
-						scanner.close();
-						return; // Exit the method to stop the program
+					case 7:
+						System.out.println("Exiting...");
+						return;
 					default:
 						System.out.println("Invalid choice.");
 				}
@@ -115,33 +104,32 @@ public class BusApplication implements CommandLineRunner {
 					System.out.println("2. Modify bus details");
 					System.out.println("3. Logout");
 				}
-				System.out.println("4. Exit"); // Add exit option for admin
+				System.out.println("4. Exit");
 
 				int choice = scanner.nextInt();
 				scanner.nextLine(); // Consume the newline character
 
 				if (!isLoggedIn) {
 					if (choice == 0) {
-						isLoggedIn = adminController.login(); // Assume this method exists
+						isLoggedIn = adminService.login();
 					} else {
 						System.out.println("You must log in first.");
 					}
 				} else {
 					switch (choice) {
 						case 1:
-							adminController.addBus();
+							busService.addBus();
 							break;
 						case 2:
-							adminController.modifyBus();
+//							adminService.modifyBus();
 							break;
 						case 3:
-							isLoggedIn = false; // Log out the admin
+							isLoggedIn = false;
 							System.out.println("You have been logged out.");
 							break;
-						case 4: // Exit option for admins
+						case 4:
 							System.out.println("Exiting the application. Goodbye!");
-							scanner.close();
-							return; // Exit the method to stop the program
+							return;
 						default:
 							System.out.println("Invalid choice.");
 					}
@@ -149,5 +137,4 @@ public class BusApplication implements CommandLineRunner {
 			}
 		}
 	}
-
 }

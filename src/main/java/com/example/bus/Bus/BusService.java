@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
+
 import javafx.util.Pair;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BusController {
+public class BusService {
 
     @Autowired
     private BusRepository busRepository;
@@ -39,9 +41,6 @@ public class BusController {
         busRepository.deleteById(id);
     }
 
-    // ---------------------- User Functionality ----------------------
-
-    // Retrieve available buses between source and destination
 
     public List<Bus> getAvailableBuses(Pair<Integer, Integer> source, Pair<Integer, Integer> destination) {
         List<Bus> buses = busRepository.findAll(); // Fetch all buses
@@ -57,7 +56,6 @@ public class BusController {
                 matchingBuses.add(bus);
             }
         }
-
         return matchingBuses;
     }
 
@@ -91,5 +89,43 @@ public class BusController {
             }
         }
         return "Bus not found";
+    }
+
+    public Bus findBybusId(int a) {
+        return busRepository.findBybusId(a);
+    }
+    public void addBus() {
+        Scanner scanner = new Scanner(System.in);
+
+        // Get bus name
+        System.out.println("Enter Bus Name:");
+        String busName = scanner.nextLine();
+
+        // Get total seats
+        System.out.println("Enter Total Seats: 16 (default value)");
+//        int totalSeats = scanner.nextInt();
+
+        // Get current occupancy
+        System.out.println("Enter Current Occupancy (number of booked seats): 0");
+//        int currentOccupancy = scanner.nextInt();
+
+        // Get route (list of pairs of source and destination)
+        System.out.println("Enter number of stops in the route:");
+        int numStops = scanner.nextInt();
+        List<Pair<Integer, Integer>> route = new ArrayList<>();
+
+        for (int i = 0; i < numStops; i++) {
+            System.out.println("Enter longitude for stop " + (i + 1) + ":");
+            int c1 = scanner.nextInt();
+            System.out.println("Enter latitude for stop " + (i + 1) + ":");
+            int c2 = scanner.nextInt();
+            route.add(new Pair<>(c1, c2));
+        }
+
+        Bus bus = new Bus(busName, 16, 0, route);
+
+        busRepository.save(bus);
+
+        System.out.println("Bus added successfully!");
     }
 }

@@ -23,16 +23,16 @@ public class Bus {
     @Column(nullable = false)
     private int currentOccupancy;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(nullable = false)
     private Map<String, Boolean> seatPlan; // Seat plan with availability (true = available, false = booked)
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "bus_route", joinColumns = @JoinColumn(name = "bus_id"))
     @Column(name = "route")
     private List<Pair<Integer, Integer>> route; // List of (source, destination) pairs
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "available_days", joinColumns = @JoinColumn(name = "bus_id"))
     @Column(name = "day")
     private List<String> availableDays; // List of available days (e.g., ["Monday", "Wednesday"])
@@ -195,6 +195,25 @@ public class Bus {
             return "Yellow";
         } else {
             return "Red";
+        }
+    }
+    public void printSeatPlan() {
+        String resetColor = "\u001B[0m";
+        String bookedColor = "\u001B[31m";
+        String availableColor = "\u001B[37m";
+        String[] rows = {"1", "2", "3", "4"};
+        String[] columns = {"A", "B", "C", "D"};
+
+        for (String row : rows) {
+            for (String column : columns) {
+                String seatNumber = row + column;
+                if (seatPlan.get(seatNumber)) {
+                    System.out.print(availableColor + seatNumber + " " + resetColor);
+                } else {
+                    System.out.print(bookedColor + seatNumber + " " + resetColor);
+                }
+            }
+            System.out.println();
         }
     }
 }
