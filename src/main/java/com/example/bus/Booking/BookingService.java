@@ -89,7 +89,6 @@ public class BookingService {
             return true;
         }
         return false;
-
     }
 
     // Change booking status

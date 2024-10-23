@@ -23,7 +23,6 @@ public class BookingDTO {
         this.bookingTime = bookingTime;
         this.travelDate = travelDate;
         this.status = status;
-
     }
 
     // Getters and Setters
