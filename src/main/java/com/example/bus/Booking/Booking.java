@@ -47,7 +47,8 @@ public class Booking {
         this.destination = destination;
         this.status = BookingStatus.PENDING; // Set default status to PENDING
     }
-
+    public Booking() {
+    }
     // Getters and Setters
     public int getId() {
         return bookingId;

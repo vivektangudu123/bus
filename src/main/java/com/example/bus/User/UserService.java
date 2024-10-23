@@ -153,6 +153,13 @@ public class UserService {
             }
         }
     }
+    public Bus cancel_seat(int aa) throws Exception {
+        Booking bo=bookingService.changeBookingStatus(aa,BookingStatus.CANCELLED);
+        Bus bus=bo.getBus();
+        bus.cancelSeatBooking(bo.getSeatNumber());
+        return busService.addBus(bus);
+    }
+
     public void cancelBusSeat(User user) throws Exception {
         List<Booking> bookings=bookingService.getBookingsByUserId(user.getUserId());
         for(Booking a:bookings){
@@ -160,10 +167,7 @@ public class UserService {
         }
         System.out.println("Which booking you want to cancel\n");
         int aa=scanner.nextInt();
-        Booking bo=bookingService.changeBookingStatus(aa, BookingStatus.CANCELLED);
-        Bus bus=bo.getBus();
-        bus.cancelSeatBooking(bo.getSeatNumber());
-        busService.addBus(bus);
+        cancel_seat(aa);
     }
 
     public User findByUserId(int loggedUserId) {

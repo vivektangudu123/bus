@@ -43,7 +43,7 @@ public class AuthenticationController {
     }
 
     public String verify_jwt(String JWT) {
-        JWT = JWT.substring(1, JWT.length() - 1);
+//        JWT = JWT.substring(1, JWT.length() - 1);
         System.out.println(JWT);
         String username=get_username_using_jwt(JWT);
         System.out.println(username);
@@ -75,10 +75,11 @@ public class AuthenticationController {
         try {
             return jwtUtils.extractUsername(token);
         } catch (ExpiredJwtException ex) {
-            return "1";
+            System.out.println("Expried token");
+            return "-1";
         } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-
-            return"2";
+            System.out.println("Invalid token");
+            return"-2";
         }
     }
 
