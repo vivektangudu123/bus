@@ -126,6 +126,9 @@ public class UserService {
         }
 
     }
+    public List<Bus> get_view_buses(int s1,int s2,int d1,int d2){
+        return busService.getAvailableBuses(new Pair<>(s1,s2),new Pair<>(d1,d2));
+    }
     public void viewBuses(){
         System.out.println("Enter longitude for Source:");
         s1 = scanner.nextInt();
@@ -135,7 +138,7 @@ public class UserService {
         d1 = scanner.nextInt();
         System.out.println("Enter latitude for Destination:");
         d2 = scanner.nextInt();
-        List<Bus> available_buses=busService.getAvailableBuses(new Pair<>(s1,s2),new Pair<>(d1,d2));
+        List<Bus> available_buses=get_view_buses(s1,s2,d1,d2);
         for (Bus a : available_buses) {
             System.out.println("Bus name: " + a.getBusName() + ",Id: " + a.getId() + ",Occupancy Rate:" + a.getSeatAvailabilityColor());
         }

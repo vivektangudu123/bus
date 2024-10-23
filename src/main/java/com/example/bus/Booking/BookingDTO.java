@@ -1,5 +1,7 @@
 package com.example.bus.Booking;
 
+import com.example.bus.Bus.Bus;
+
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 
@@ -10,17 +12,18 @@ public class BookingDTO {
     private LocalDateTime bookingTime;
     private LocalDate travelDate;
     private BookingStatus status;
-
+    private String  busName;
     // No-argument constructor
     public BookingDTO() {}
 
     // Parameterized constructor
-    public BookingDTO(int bookingId, String seatNumber, LocalDateTime bookingTime, LocalDate travelDate, BookingStatus status) {
+    public BookingDTO(int bookingId, String seatNumber, LocalDateTime bookingTime, LocalDate travelDate, BookingStatus status,String Busname) {
         this.bookingId = bookingId;
         this.seatNumber = seatNumber;
         this.bookingTime = bookingTime;
         this.travelDate = travelDate;
         this.status = status;
+
     }
 
     // Getters and Setters

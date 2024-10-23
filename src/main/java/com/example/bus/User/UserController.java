@@ -57,7 +57,7 @@ public class UserController {
 
     @CrossOrigin
     @PostMapping("/users/bookings")
-    public List <BookingDTO> boookings(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<List<BookingDTO>> boookings(@RequestBody Map<String, Object> payload) {
         String jwt=(String) payload.get("jwt");
         String mobileNUmber=authenticationController.verify_jwt(jwt);
         User user=userRepository.findByPhoneNumber(mobileNUmber);
@@ -72,23 +72,52 @@ public class UserController {
                         booking.getSeatNumber(),
                         booking.getBookingTime(),
                         booking.getTravelDate(),
-                        booking.getStatus()
+                        booking.getStatus(),
+                        booking.getBus().getBusName()
                 ))
                 .collect(Collectors.toList());
 
-        return bookingDTOs;
 
+        return ResponseEntity.ok(bookingDTOs);
     }
 
     @CrossOrigin
     @PostMapping("/users/cancel-booking")
     public boolean cancelBooking(@RequestBody Map<String, Object> payload) throws Exception {
         String jwt=(String) payload.get("jwt");
-        int bookingId=(int) payload.get("BookingID");
-//        String mobileNUmber=authenticationCont1roller.verify_jwt(jwt);
-//        User user=userRepository.findByPhoneNumber(mobileNUmber);
+        String booking_str=(String) payload.get("BookingID");
+        System.out.println(booking_str);
+        int bookingId;
+        try {
+            bookingId = Integer.parseInt(booking_str);
+        } catch (NumberFormatException e) {
+            // Handle the case where the string cannot be parsed as an integer
+            throw new Exception("Invalid BookingID format", e);
+        }
         userService.cancel_seat(bookingId);
         return true;
     }
-}
+    @CrossOrigin
+    @PostMapping("/users/search")
+    public boolean search(@RequestBody Map<String, Object> payload) throws Exception {
+        try {
+            // Extract the parameters and convert them to integers
+            int s1 = Integer.parseInt((String) payload.get("s1"));
+            int s2 = Integer.parseInt((String) payload.get("s2"));
+            int d1 = Integer.parseInt((String) payload.get("d1"));
+            int d2 = Integer.parseInt((String) payload.get("d2"));
+
+            // Proceed with your business logic using the integer values
+            // For example:
+            System.out.println("Source: " + s1 + ", " + s2);
+            System.out.println("Destination: " + d1 + ", " + d2);
+
+            // Example of using the user service to search for buses
+             userService.get_view_buses(s1,s2,d1,d2);
+            return true; // Return a response based on your logic
+        } catch (NumberFormatException e) {
+            // Handle the case where the string cannot be parsed as an integer
+            throw new Exception("Invalid input format", e);
+        }
+    }
 

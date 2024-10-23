@@ -122,6 +122,7 @@ public class BusService {
             route.add(new Pair<>(c1, c2));
         }
 
+
         Bus bus = new Bus(busName, 16, 0, route);
 
         busRepository.save(bus);
